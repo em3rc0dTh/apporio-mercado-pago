@@ -1,65 +1,88 @@
-# Procesamiento de pagos con tarjeta a través de Checkout API
+# Motomuv Ambassador Day
 
 [English](README.md) / [Português](README.pt.md)
 
-## :computer: Tecnologías
+Este proyecto es el backend y la aplicación móvil para el evento **Motomuv Ambassador Day**. Permite a los usuarios registrarse, iniciar sesión y pagar una tarifa de servicio fija de **S/ 3.00** utilizando Yape o Tarjetas de Crédito/Débito a través de Mercado Pago.
 
-- Node.js
-- [NPM](https://www.npmjs.com) (dependency manager)
-- Express
+## Estructura del Proyecto
 
-## 💡 Requisitos
+Este repositorio contiene dos partes principales:
+1.  **Backend (`/`)**: Un servidor Node.js/Express que maneja la autenticación, gestión de saldos y pagos de Mercado Pago.
+2.  **App Móvil (`/mobile`)**: Una aplicación React Native (Expo) para que los usuarios interactúen con el servicio.
 
-- Node.js 12 o superior (descarga [aquí](https://nodejs.org/)).
-- [Lee nuestras instrucciones](https://www.mercadopago.com/developers/es/guides/overview#bookmark_el_desarrollo_con_c%C3%B3digo) sobre cómo crear una aplicación en el Panel de Desarrolladores de Mercado Pago para obtener la public key y el access token. Estas llaves te darán acceso a las API de Mercado Pago.
+## Requisitos Previos
 
-## :gear: Instalación
+-   **Node.js**: v18 o superior.
+-   **MongoDB**: Usando MongoDB Local o Atlas.
+-   **Expo CLI**: Instalado globalmente (`npm install -g expo-cli`).
 
-1. Clona el proyecto.
+## Instrucciones de Configuración
 
-```bash
-git clone https://github.com/mercadopago/card-payment-sample-node.git
-```
+### 1. Configuración del Backend
 
-2. Accede a la carpeta.
+1.  Navega al directorio raíz.
+2.  Instala las dependencias:
+    ```bash
+    npm install
+    ```
+3.  Configura las Variables de Entorno:
+    -   Asegúrate de tener un archivo `.env` en la raíz con las siguientes claves:
+        ```env
+        MERCADO_PAGO_SAMPLE_PUBLIC_KEY=APP_USR-...
+        MERCADO_PAGO_SAMPLE_ACCESS_TOKEN=APP_USR-...
+        MONGO_URI=mongodb://localhost:27017/motomuv (o tu URI de Atlas)
+        JWT_SECRET=tu_secreto_jwt
+        ```
+4.  Inicia el Servidor:
+    ```bash
+    npm start
+    ```
+    El servidor se ejecutará en `http://localhost:8080`.
 
-```bash
-cd card-payment-sample-node
-```
+### 2. Configuración de la App Móvil
 
-3. Instala las dependencias necesarias.
+1.  Navega al directorio móvil:
+    ```bash
+    cd mobile
+    ```
+2.  Instale las dependencias:
+    ```bash
+    npm install
+    ```
+3.  Configura la URL del Backend:
+    -   Abre `mobile/screens/LoginScreen.js`, `mobile/screens/SignupScreen.js`, y `mobile/App.js`.
+    -   Actualiza `BACKEND_URL` a la dirección IP local de tu máquina (ej. `http://192.168.1.33:8080`). **No uses `localhost`** ya que los dispositivos/emuladores requieren la IP de red.
 
-```bash
-npm install
-```
+4.  Inicia la App:
+    ```bash
+    npx expo start --clear
+    ```
+5.  Escanea el código QR con la app Expo Go (Android/iOS) o ejecuta en un emulador.
 
-## 🌟 Como ejecutar
+## Endpoints de la API
 
-1. Accede a la carpeta del proyecto.
+-   `POST /auth/register`: Crear una nueva cuenta de usuario.
+-   `POST /auth/login`: Autenticar un usuario y recibir un token JWT.
+-   `GET /get_balance`: Obtener el saldo actual del usuario autenticado.
+-   `GET /get_transactions`: Obtener el historial de transacciones.
+-   `POST /process_payment`: Procesar un pago a través de Mercado Pago (Yape o Tarjeta).
 
-```bash
-cd card-payment-sample-node
-```
+## Características de la App Móvil
 
-2. Ejecuta el siguiente comando para iniciar la aplicación:
+-   **Autenticación**: Pantallas de Inicio de Sesión y Registro con manejo de JWT.
+-   **Panel de Control**: Ver saldo e iniciar pagos.
+-   **Precio Fijo**: Tarifa de servicio bloqueada en **S/ 3.00**.
+-   **Métodos de Pago**:
+    -   **Yape**: Genera un QR dinámico (simulado en sandbox/test).
+    -   **Tarjeta**: Procesamiento de tarjetas de Crédito/Débito.
+-   **Historial de Transacciones**: Ver pagos pasados en un modal.
 
-```bash
-MERCADO_PAGO_SAMPLE_PUBLIC_KEY=YOUR_PUBLIC_KEY MERCADO_PAGO_SAMPLE_ACCESS_TOKEN=YOUR_ACCESS_TOKEN npm start
-```
+## Documentación
 
-3. Recuerda cambiar los valores de `YOUR_PUBLIC_KEY` y `YOUR_ACCESS_TOKEN` por las [credenciales](https://www.mercadopago.com/developers/panel) de su cuenta.
+El código base está documentado con comentarios JSDoc. Archivos clave:
+-   `mobile/App.js`: Lógica principal de la aplicación y orquestación de pagos.
+-   `mobile/components/MovementsModal.js`: Interfaz de usuario del historial de transacciones.
+-   `controllers/`: Lógica del backend para pagos y autenticación.
 
-4. Accede a [http://localhost:8080](http://localhost:8080) en tu navegador.
-
-### :test_tube: Pruebas
-
-En nuestras [instrucciones de prueba](https://www.mercadopago.com/developers/es/guides/online-payments/checkout-api/testing) encontrarás **[tarjetas de crédito](https://www.mercadopago.com/developers/es/guides/online-payments/checkout-api/testing#bookmark_tarjetas_de_prueba)** que se pueden utilizar para simular el pago de este ejemplo, junto con una guía sobre cómo crear **[usuarios de prueba](https://www.mercadopago.com/developers/es/guides/online-payments/checkout-api/testing#bookmark_c_mo_crear_usuarios)**.
-
-## :handshake: Contribuyendo
-
-Puedes contribuir a este proyecto informando problemas y bugs. Antes de abrir una contribución, lee nuestro [código de conducta](CODE_OF_CONDUCT.md).
-
-## :bookmark: Licencia
-
-MIT License. Copyright (c) 2021 - Mercado Pago <br/>
-Para obtener más información, consulte el archivo [LICENSE](LICENSE).
+---
+*Powered by Motomuv & Mercado Pago*
